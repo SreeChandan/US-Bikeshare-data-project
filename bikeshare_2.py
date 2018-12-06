@@ -83,8 +83,8 @@ def load_data(city, month, day):
     Returns:
         df - Pandas DataFrame containing city data filtered by month and day
     """
-    #path = ''
-    path = 'Sources/bikeshare-2/'
+    path = ''
+    #path = 'Sources/bikeshare-2/'
     filepath = path + CITY_DATA[city]
     df = pd.read_csv(filepath)
 
