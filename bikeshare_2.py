@@ -22,15 +22,14 @@ def get_filters():
     # get user input for city (chicago, new york city, washington). HINT: Use a while loop to handle invalid inputs
     cities = ['chicago', 'new york city', 'washington']
     city = custom_input('Select a City among these: (1 to 3)',
-                       cities, 'City' , get_all=False)
+                       cities, 'City', get_all=False)
     # get user input for month (all, january, february, ... , june)
     months = ['january', 'february', 'march', 'april', 'may', 'june']
     month = custom_input('Select a Month among these: (1 to 6) (0 for all)',
                        months, 'Month')
     # get user input for day of week (all, monday, tuesday, ... sunday)
     days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-    day = custom_input('Select a Day among these: (1 to 7) (0 for all)',
-                       days, 'Day')
+    day = custom_input('Select a Day among these: (1 to 7) (0 for all)', days, 'Day')
     #print('Day {} is Selected.'.format(day))
 
 
@@ -41,7 +40,7 @@ def get_filters():
     return city, month, day
 #%%
 
-def custom_input(input_desc:str, item_list:list , context:str , get_all=True) :
+def custom_input(input_desc:str, item_list:list , context:str , get_all=True):
     """
     Custom function to take input
 
@@ -108,9 +107,8 @@ def load_data(city, month, day):
     # filter by day of week if applicable
     if day != 'all':
         # filter by day of week to create the new dataframe
-        days = {'monday':0,'tuesday':1,'wednesday':2,'thursday':3,'friday':4,'saturday':5,'sunday':6}
+        days = {'monday':0, 'tuesday':1, 'wednesday':2, 'thursday':3, 'friday':4, 'saturday':5, 'sunday':6}
         df = df[df['day_of_week'] == days[day]]
-
 
     return df
 #%%
@@ -139,7 +137,7 @@ def time_stats(df,all_months=True,all_days=True):
         days_counts = pd.Series(np.array([len(value) for value in days_counts.values()]), index=days_counts.keys())
         #print('day counts : \n', days_counts)
         popular_day = days_counts.idxmax()
-        days = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday']
+        days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
         print('Popular day : ' + days[popular_day])
 
     # display the most common start hour
@@ -162,7 +160,7 @@ def station_stats(df):
     start_time = time.time()
 
     # display most commonly used start station
-    start_stations =  df.groupby('Start Station').groups
+    start_stations = df.groupby('Start Station').groups
     start_station_counts = pd.Series(np.array([len(group) for group in start_stations.values()]), index = start_stations.keys())
     print('Popular Start Station : ', start_station_counts.idxmax(), ' with ', start_station_counts.max(), ' uses.')
 
@@ -181,7 +179,8 @@ def station_stats(df):
     print('\n\n Additional Station Statistics')
     print('-'*20)
     print('The most frequent casual ride path is : (i.e. start station = end station)')
-    casual_path_counts = path_counts[path_counts['Start Station']==path_counts['End Station']].filter(['Start Station', 'Count']).rename({'Start Station': 'Station'}, axis='columns')
+    #casual_path_counts = path_counts[path_counts['Start Station']==path_counts['End Station']].filter(['Start Station', 'Count']).rename({'Start Station': 'Station'}, axis='columns')
+    casual_path_counts = path_counts[path_counts['Start Station']==path_counts['End Station']].filter(['Start Station', 'Count']).rename(columns={'Start Station': 'Station'})
     print(casual_path_counts.loc[[casual_path_counts['Count'].idxmax()]])
     print('Stations with no incoming trips : ')
     print(start_stations.keys() - (start_stations.keys() & end_stations.keys()))
@@ -271,6 +270,25 @@ def main():
         station_stats(df)
         trip_duration_stats(df)
         user_stats(df)
+        count = 1
+        while True:
+            print('Do you want to see 5 rows of the selected data?')
+            more = ''
+            while type(more)==str:
+                more = input('(1 or 0) (yes or no): ')
+                try:
+                    more = int(more)
+                except ValueError:
+                    if 'y' in more.lower():
+                        more = True
+                    else:
+                        more = False
+            if more:
+                print(df.loc[count-1:count+3])
+                #print(df.columns)
+                count += 5
+            else:
+                break
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() not in ('yes','y'):
