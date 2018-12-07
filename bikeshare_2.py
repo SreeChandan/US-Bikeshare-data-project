@@ -284,9 +284,11 @@ def main():
                     else:
                         more = False
             if more:
-                print(df.loc[count-1:count+3])
+                print(df.iloc[count-1:count+4])
                 #print(df.columns)
+                #print(count-1,count+4)
                 count += 5
+
             else:
                 break
 
